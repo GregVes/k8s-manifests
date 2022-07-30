@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.server.appName }}
+  labels:
+    {{- include "matrix.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.server.selector }}
+  template:
+    metadata:
+      labels:
+        {{- include "matrix.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/name: {{ .Values.server.selector }}
+    spec:
+      containers:
+        - name: synapse
+          image: matrixdotorg/synapse:v1.63.1
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 8008
+          volumeMounts:
+            - name: {{ .Values.server.configVolume }}
+              mountPath: /matrix/config
+              readOnly: false
+            - name: {{ .Values.server.mediaStoreVolume }}
+              mountPath: /matrix/store/media_store
+            - name: {{ .Values.server.secretVolume }}
+              readOnly: true
+              mountPath: /data
+      volumes:
+        - name: {{ .Values.server.configVolume }}
+          configMap:
+            name: {{ .Values.server.configMap }}
+            items:
+            - key: "neukolln-matrix-dev.com.log.config"
+              path: "neukolln-matrix-dev.com.log.config"
+            - key: "neukolln-matrix-dev.com.signing.key"
+              path: "neukolln-matrix-dev.com.signing.key"
+        - name: {{ .Values.server.mediaStoreVolume }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.server.pvc }}
+        # 1. cat homeserver.yaml |base 64
+        # 2. copy paste content into server-secret.yaml
+        # 3. kubectl apply -f server-secret.yaml
+        - name: {{ .Values.server.secretVolume }}
+          secret:
+            secretName: {{ .Values.server.secretName }}

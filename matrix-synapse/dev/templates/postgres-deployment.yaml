@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "matrix.postgresName" . }}
+  labels:
+    {{- include "matrix.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.postgres.selector }}
+  template:
+    metadata:
+      labels:
+        {{- include "matrix.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/name: {{ .Values.postgres.selector }}
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:12.8
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              subPath: db
+              name: {{ .Values.postgres.volume }}
+            - mountPath: /docker-entrypoint-initdb.d/db-create.sql
+              name: {{ .Values.postgres.config }}
+              subPath: db-create.sql
+          env:
+          - name: "PGDATA"
+            value: /var/lib/postgresql/data/db
+          - name: "POSTGRES_DB"
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.postgres.secretName }}
+                key: "POSTGRES_DB"
+          - name: "POSTGRES_USER"
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.postgres.secretName }}
+                key: "POSTGRES_USER"
+          - name: "POSTGRES_PASSWORD"
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.postgres.secretName }}
+                key: "POSTGRES_PASSWORD"
+      volumes:
+        - name: {{ .Values.postgres.volume }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.postgres.pvc }}
+        - name: {{ .Values.postgres.config }}
+          configMap:
+            name: {{ .Values.postgres.configMap }}

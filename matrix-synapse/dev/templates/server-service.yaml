@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.server.service.name }}
+  labels:
+    {{- include "matrix.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.server.service.type }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.server.service.port }}
+      targetPort: {{ .Values.server.service.targetPort }}
+  selector:
+    app.kubernetes.io/name: {{ .Values.server.selector }}

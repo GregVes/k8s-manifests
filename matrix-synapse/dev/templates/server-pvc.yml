@@ -1,0 +1,13 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.server.pvc }}
+  labels:
+    {{- include "matrix.labels" . | nindent 4 }}
+spec:
+  storageClassName: {{ .Values.server.storageClass }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.server.storageSize }}
