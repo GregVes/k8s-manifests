@@ -4,7 +4,7 @@ A collection fo Kubernetes manifests
 
 ## Synapse
 
-Deploys a Synapse server as well as a Postgresql database in a bare-metal cluster
+Deploys a [Synapse server](https://github.com/matrix-org/synapse) and a Postgresql database in a bare-metal cluster
 
 Notes:
 * homeserver.yaml is encrypted (`server-sealed-secrets.yaml`) using Bitnami's `sealed-secrets` controller as it contains database credentials
