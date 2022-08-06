@@ -1,0 +1,53 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Values.cronjob.appName }}
+  labels:
+    {{- include "matrix.labels" . | nindent 4 }}
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: pg-s3-backup
+            image: public.ecr.aws/u0e6y9i3/pg-s3-backup:v1
+            imagePullPolicy: IfNotPresent
+            env:
+            - name: "AWS_ACCESS_KEY_ID"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.cronjob.secretName }}
+                  key: "AWS_ACCESS_KEY_ID"
+            - name: "AWS_SECRET_ACCESS_KEY"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.cronjob.secretName }}
+                  key: "AWS_SECRET_ACCESS_KEY"
+            - name: "AWS_S3_BUCKET"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.cronjob.secretName }}
+                  key: "AWS_S3_BUCKET"
+            - name: "PG_HOST"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.cronjob.secretName }}
+                  key: "PG_HOST"
+            - name: "PG_USER"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.cronjob.secretName }}
+                  key: "PG_USER"
+            - name: "PG_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.cronjob.secretName }}
+                  key: "PG_PASSWORD"
+            - name: "PG_DB"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.cronjob.secretName }}
+                  key: "PG_DB"
+          restartPolicy: OnFailure

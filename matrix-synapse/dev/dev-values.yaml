@@ -122,3 +122,8 @@ postgres:
     name: matrix-postgres-service
     type: ClusterIP
     port: 5432
+
+# daily backups up db to s3
+cronjob:
+  appName: matrix-postgres-cronjob
+  secretName: cronjob-secret
