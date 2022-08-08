@@ -1,6 +1,6 @@
 # k8s-manifests
 
-A collection fo Kubernetes manifests. Any change in an app's manifest files triggers a deployment performed by `argocd.gregentoo-cluster.eu` instance.
+A collection fo Kubernetes manifests
 
 ## Synapse
 
