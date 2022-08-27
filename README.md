@@ -12,3 +12,4 @@ Notes:
 * for networking, we have an Nginx ingress controller - bound to the VMs' host network - that reads the rule of `server-ingress.yaml` and route traffic to the server (Nginx ingress controller -> ingress -> service -> synapse server)
 * for federation, we cannot use port 8448 with the ingress controller, so we leverage delegation (see `nginx.ingress.kubernetes.io/configuration-snippet` in `server-ingress.yaml`)
 * a CronJob backs up the db to AWS s3 every day at midnight using [this](https://github.com/GregVes/docker-images/tree/main/pgdump-s3) Docker image
+* we need the name of a retained pvc in `postgres-pvc.yml`. We do this so that if postgres app goes down, pv featuring /var/lib/postgresql/data won't be lost. See how to retain the volume here: https://github.com/openebs/openebs/issues/479#issuecomment-479727345)
