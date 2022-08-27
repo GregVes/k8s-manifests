@@ -4,6 +4,7 @@ metadata:
   name: {{ .Values.server.pvc }}
   labels:
     {{- include "matrix.labels" . | nindent 4 }}
+    meta.helm.sh/release-namespace: matrix-dev
 spec:
   storageClassName: {{ .Values.server.storageClass }}
   accessModes:

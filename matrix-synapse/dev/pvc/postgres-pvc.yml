@@ -1,0 +1,16 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: matrix-postgres-pvc
+  namespace: matrix-dev
+  #labels:
+  #  {{- include "matrix.labels" . | nindent 4 }}
+spec:
+  storageClassName: openebs-jiva-csi-sc
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  # see why here: https://github.com/openebs/openebs/issues/479#issuecomment-479727345
+  volumeName: pvc-a3ddc05d-e32b-4652-a31c-4b325d8e0559

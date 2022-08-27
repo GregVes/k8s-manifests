@@ -92,7 +92,7 @@ server:
   secretName: matrix-synapse-secret
   mediaStoreVolume: matrix-synapse-mediastore
   pvc: matrix-synapse-pvc
-  storageClass: openebs-jiva-csi-sc
+  storageClass: openebs-jiva-csi-sc-without-retain
   storageSize: 10Gi
   ingress:
     name: matrix-synapse-ingress

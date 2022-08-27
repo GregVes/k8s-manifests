@@ -53,3 +53,5 @@ spec:
         - name: {{ .Values.postgres.config }}
           configMap:
             name: {{ .Values.postgres.configMap }}
+
+            #/var/lib/postgresql/data/db
